@@ -48,9 +48,10 @@ func QueryProduct(store, productName string) (rProduct Product) {
 		var productList []Product
 		totalPages := 0
 		page := 1
+		paginationLimit := 2 // to control number of API requests
 		encodedName := url.QueryEscape(productName)
 
-		for ; totalPages == 0 || page <= totalPages; page++ {
+		for ; totalPages == 0 || (page < paginationLimit && page <= totalPages); page++ {
 			queryURL := "https://www.honestbee.tw/api/api/stores/3932?q=" + encodedName + "&sort=relevance&page=" + strconv.Itoa(page)
 
 			fmt.Println("start to query:%s; page:%d", queryURL, page)
@@ -91,6 +92,11 @@ func QueryProduct(store, productName string) (rProduct Product) {
 			fmt.Println(resp.Meta["current_page"])
 			fmt.Println(resp.Meta["total_pages"])
 			fmt.Println(resp.Meta["total_count"])
+			if resp.Meta["total_count"] == 0 {
+				fmt.Println("no any match query result")
+				break
+			}
+
 			totalPages = resp.Meta["total_pages"]
 
 			productList = append(productList, resp.Products...)
@@ -104,6 +110,7 @@ func QueryProduct(store, productName string) (rProduct Product) {
 		fmt.Println("finish all pages search")
 		fmt.Println(len(productList))
 
+		// TODO: improve perfomrance later: use reference instead of concatenation-copy
 		var lowerestProduct Product
 		for i, p := range productList {
 			if i == 0 {
