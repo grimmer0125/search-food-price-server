@@ -11,8 +11,15 @@ import (
 	"github.com/grimmer0125/bee/util"
 )
 
+// each http request will live in an individual goroutine
 func main() {
-	r := gin.Default()
+	//r := gin.Default()
+	r := gin.New()
+	r.Use(func(context *gin.Context) {
+		// add header Access-Control-Allow-Origin
+		context.Writer.Header().Add("Access-Control-Allow-Origin", "*")
+		context.Next()
+	})
 	r.POST("/rpc", func(c *gin.Context) {
 
 		fmt.Println("get rpc call")
@@ -36,10 +43,11 @@ func main() {
 				name := util.GetStringProperty(params, "productName")
 				_, _ = store, name
 				if store != "" && name != "" {
+
 					product := searchbot.QueryProduct(store, name)
 					fmt.Println(product)
 
-					remoteURL := "https://www.honestbee.tw/zh-TW/groceries/stores/carrefour/products/" + strconv.FormatFloat(product.ID, 'f', 0, 64)
+					remoteURL := "https://www.honestbee.tw/zh-TW/groceries/stores/"+store+"/products/" + strconv.FormatFloat(product.ID, 'f', 0, 64)
 					c.JSON(200, gin.H{
 						"Price":           product.Price,
 						"PreviewImageUrl": product.PreviewImageUrl,
@@ -55,5 +63,6 @@ func main() {
 		c.JSON(404, gin.H{"code": "SEARCH NOT_FOUND", "message": "SEARCH not found"})
 
 	})
+
 	r.Run() // listen and serve on 0.0.0.0:8080
 }

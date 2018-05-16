@@ -40,15 +40,17 @@ type queryResult struct {
 // 	total_count  int
 // }
 
-// QueryProduct for carrefour etc
+// only QueryProduct on Honestbee for carrefour etc now
+//TODO use interface + factory pattern later,
+// if we need to query the other sites
 func QueryProduct(store, productName string) (rProduct Product) {
 
 	if store == "carrefour" {
 
-		var productList []Product
+		var productList [][]Product
 		totalPages := 0
 		page := 1
-		paginationLimit := 2 // to control number of API requests
+		paginationLimit := 5 // to control number of API requests
 		encodedName := url.QueryEscape(productName)
 
 		for ; totalPages == 0 || (page < paginationLimit && page <= totalPages); page++ {
@@ -99,7 +101,7 @@ func QueryProduct(store, productName string) (rProduct Product) {
 
 			totalPages = resp.Meta["total_pages"]
 
-			productList = append(productList, resp.Products...)
+			productList = append(productList, resp.Products)
 
 			fmt.Println(len(resp.Products))
 
@@ -110,17 +112,19 @@ func QueryProduct(store, productName string) (rProduct Product) {
 		fmt.Println("finish all pages search")
 		fmt.Println(len(productList))
 
-		// TODO: improve perfomrance later: use reference instead of concatenation-copy
 		var lowerestProduct Product
-		for i, p := range productList {
-			if i == 0 {
-				lowerestProduct = p
-			} else {
-				price1, err1 := strconv.ParseFloat(lowerestProduct.Price, 64)
-				price2, err2 := strconv.ParseFloat(p.Price, 64)
-
-				if err1 == nil && err2 == nil && price2 < price1 {
+		for i, products := range productList {
+			for j, p := range products {
+				// fmt.Printf("i:%d, j:%d", i, j)
+				if i == 0 && j == 0 {
 					lowerestProduct = p
+				} else {
+					price1, err1 := strconv.ParseFloat(lowerestProduct.Price, 64)
+					price2, err2 := strconv.ParseFloat(p.Price, 64)
+
+					if err1 == nil && err2 == nil && price2 < price1 {
+						lowerestProduct = p
+					}
 				}
 			}
 		}
