@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/grimmer0125/bee/searchbot"
@@ -18,6 +19,8 @@ import (
 // each http request will live in an individual goroutine
 func main() {
 
+	setupMongo()
+
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
@@ -27,10 +30,8 @@ func main() {
 	slackChannel := os.Getenv("SLACK_CHANNEL")
 	_, _ = slackToken, slackChannel
 
-	//r := gin.Default()
 	r := gin.New()
 	r.Use(func(context *gin.Context) {
-		// add header Access-Control-Allow-Origin
 		context.Writer.Header().Add("Access-Control-Allow-Origin", "*")
 		context.Next()
 	})
@@ -59,13 +60,33 @@ func main() {
 				sourceURL := util.GetStringProperty(params, "sourceURL")
 				if store != "" && name != "" && shownPrice != "" && sourceURL != "" {
 
-					product := searchbot.QueryProduct(store, name)
-					fmt.Println(product)
+					result := mongoRead(name)
+					var product searchbot.Product
+					if result == nil {
+						product = searchbot.QueryProduct(store, name)
+						fmt.Println(product)
+						mongoInsert(&QueryResult{
+							Store:           "honestbee",
+							QueryKey:        name,
+							Title:           product.Title,
+							PreviewImageURL: product.PreviewImageURL,
+							Price:           product.Price,
+							CreatedAt:       time.Now(),
+							ProductID:       product.ID,
+						})
+					} else {
+						product = searchbot.Product{
+							Title:           result.Title,
+							PreviewImageURL: result.PreviewImageURL,
+							Price:           result.Price,
+							ID:              result.ProductID,
+						}
+					}
 
 					remoteURL := "https://www.honestbee.tw/zh-TW/groceries/stores/" + store + "/products/" + strconv.FormatFloat(product.ID, 'f', 0, 64)
 					c.JSON(200, gin.H{
 						"Price":           product.Price,
-						"PreviewImageUrl": product.PreviewImageUrl,
+						"PreviewImageUrl": product.PreviewImageURL,
 						"Title":           product.Title,
 						"RemoteURL":       remoteURL,
 					})
@@ -77,7 +98,7 @@ func main() {
 
 						if priceHonest > price {
 							message := "honesetbee is not cheaper than " + sourceURL
-							// send a slack mesasge
+							// send a slack alert to notify admin
 							notifyAdmin(slackToken, slackChannel, message)
 						}
 					}

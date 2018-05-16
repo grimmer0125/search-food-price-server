@@ -15,7 +15,7 @@ type Product struct {
 	Title string  `json:"title"`
 	// description     string
 	// imageUrl        string
-	PreviewImageUrl string `json:"previewImageUrl"`
+	PreviewImageURL string `json:"previewImageUrl"`
 	// size            string
 	// status          string // "status_available",
 	// currency        string
