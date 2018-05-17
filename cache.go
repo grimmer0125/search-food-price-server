@@ -84,7 +84,7 @@ func mongoInsert(result *QueryResult) {
 	c := session.DB("test").C(collection)
 
 	//https://stackoverflow.com/questions/43278696/golang-mgo-insert-or-update-not-working-as-expected
-	_, err := c.Upsert(
+	_, err = c.Upsert(
 		bson.M{"queryKey": result.QueryKey}, result,
 	)
 
