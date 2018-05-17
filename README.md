@@ -1,6 +1,14 @@
 # food-price-search-engine
 
-## set up Slack bot to notify administrator the price alert
+## Development
+
+**only tested on Mac 10.13.2 + go 1.10.2**
+
+### Requirement
+
+1. go >= 1.9 (since golang/dep is used)
+
+### Set up Slack bot to notify administrator the price alert
 
 1. follow
 https://get.slack.help/hc/en-us/articles/115005265703-Create-a-bot-for-your-workspace
@@ -11,8 +19,27 @@ https://get.slack.help/hc/en-us/articles/115005265703-Create-a-bot-for-your-work
     SLACK_TOKEN=YOUR_SLACK_TOKEN
     SLACK_CHANNEL=SLACK_CHANNEL_ID
     ```
-## launch Dockerized MongoDB server
+### Launch Dockerized MongoDB server as a cache storage
 
 ```
 docker run --name some-mongo -p 27017:27017 -d mongo:3.7.9-jessie
 ```
+
+This project also uses MongoDB's TTL (time to live) to expire data
+
+### Install Go Dependencies
+
+1. Install [`golang/dep`](https://github.com/golang/dep) if you do not have.
+2. In the project root folder, `dep ensure` to get all packages put in `vendor`
+
+### Launch
+
+`go build`, then execute `search-food-price-server`
+
+### Debug
+
+Use VS Code to debug it.  
+
+## Deployment
+
+Not yet. The features are not too much. `Kubernetes` may be used.

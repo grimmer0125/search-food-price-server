@@ -23,7 +23,7 @@ func main() {
 
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Printf("Error loading .env file")
 	}
 
 	slackToken := os.Getenv("SLACK_TOKEN")
@@ -64,7 +64,6 @@ func main() {
 					var product searchbot.Product
 					if result == nil {
 						product = searchbot.QueryProduct(store, name)
-						fmt.Println(product)
 						mongoInsert(&QueryResult{
 							Store:           "honestbee",
 							QueryKey:        name,
@@ -99,6 +98,7 @@ func main() {
 						if priceHonest > price {
 							message := "honesetbee is not cheaper than " + sourceURL
 							// send a slack alert to notify admin
+							fmt.Printf(message)
 							notifyAdmin(slackToken, slackChannel, message)
 						}
 					}

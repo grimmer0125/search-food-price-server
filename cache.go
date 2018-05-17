@@ -62,7 +62,7 @@ func mongoRead(queryKey string) (result *QueryResult) {
 	defer session.Close()
 	c := session.DB("test").C(collection)
 
-	var result2 QueryResult //	result1 := bson.M
+	var result2 QueryResult // it can be result2 := bson.M
 	err = c.Find(bson.M{"queryKey": queryKey}).One(&result2)
 	if err != nil {
 		fmt.Printf("not found")
@@ -72,7 +72,7 @@ func mongoRead(queryKey string) (result *QueryResult) {
 	return &result2
 }
 
-// https://hk.saowen.com/a/1eb464b5aef2ccface49aa405889b8b8853f77a2dd183bb6d7d6ecc04344f615
+// ref: https://hk.saowen.com/a/1eb464b5aef2ccface49aa405889b8b8853f77a2dd183bb6d7d6ecc04344f615
 func mongoInsert(result *QueryResult) {
 	session, err := mgo.Dial(mongoURL)
 	if err != nil {
@@ -91,9 +91,4 @@ func mongoInsert(result *QueryResult) {
 	if err != nil {
 		panic("upsert error")
 	}
-
-	// err = c.Insert(result)
-	// if err != nil {
-	// 	panic("insert error")
-	// }
 }

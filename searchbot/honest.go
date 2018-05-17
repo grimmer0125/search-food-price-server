@@ -22,12 +22,6 @@ type Product struct {
 	Price string `json:"price"`
 }
 
-// type queryResult struct {
-// 	Products   []map[string]interface{} `json:"products"`
-// 	Meta       map[string]int           `json:"meta"`
-// 	Categories []map[string]interface{} `json:"categories"`
-// }
-
 type queryResult struct {
 	Products   []Product                `json:"products"` // using []Product does works, but vs code's debugger can not show it, a bug
 	Meta       map[string]int           `json:"meta"`
@@ -41,7 +35,7 @@ type queryResult struct {
 // }
 
 // only QueryProduct on Honestbee for carrefour etc now
-//TODO use interface + factory pattern later,
+// TODO use interface + factory pattern later,
 // if we need to query the other sites
 func QueryProduct(store, productName string) (rProduct Product) {
 
@@ -53,10 +47,11 @@ func QueryProduct(store, productName string) (rProduct Product) {
 		paginationLimit := 5 // to control number of API requests
 		encodedName := url.QueryEscape(productName)
 
+		// NOTE: goroutine can be used here to speed up
 		for ; totalPages == 0 || (page < paginationLimit && page <= totalPages); page++ {
 			queryURL := "https://www.honestbee.tw/api/api/stores/3932?q=" + encodedName + "&sort=relevance&page=" + strconv.Itoa(page)
 
-			fmt.Println("start to query:%s; page:%d", queryURL, page)
+			fmt.Printf("start to query:%s; page:%d", queryURL, page)
 			req, err := http.NewRequest("GET", queryURL, nil)
 			if err != nil {
 				return
@@ -115,7 +110,6 @@ func QueryProduct(store, productName string) (rProduct Product) {
 		var lowerestProduct Product
 		for i, products := range productList {
 			for j, p := range products {
-				// fmt.Printf("i:%d, j:%d", i, j)
 				if i == 0 && j == 0 {
 					lowerestProduct = p
 				} else {
