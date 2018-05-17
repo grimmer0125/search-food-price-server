@@ -10,8 +10,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/grimmer0125/bee/searchbot"
-	"github.com/grimmer0125/bee/util"
+	"github.com/grimmer0125/search-food-price-server/searchbot"
+	"github.com/grimmer0125/search-food-price-server/util"
 	"github.com/joho/godotenv"
 	"github.com/nlopes/slack"
 )
