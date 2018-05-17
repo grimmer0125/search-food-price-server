@@ -10,6 +10,8 @@
 
 ### (optional) Set up Slack bot to notify administrator the price alert
 
+This is a workdaround way instead of having a admin site. Customizing a site or using GitHub issues is possible. 
+
 1. follow
 https://get.slack.help/hc/en-us/articles/115005265703-Create-a-bot-for-your-workspace
 2. get `API token` from its configuration page
@@ -43,3 +45,6 @@ Use VS Code to debug it.
 ## Deployment
 
 Not yet. The features are not too much. `Kubernetes` may be used.
+
+## Issues & ToDo List
+1. if MongoDB is not launched, sometimes it will wait for some secondes when tyrining to use it.
