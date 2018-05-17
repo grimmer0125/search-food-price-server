@@ -8,7 +8,7 @@
 
 1. go >= 1.9 (since golang/dep is used)
 
-### Set up Slack bot to notify administrator the price alert
+### (optional) Set up Slack bot to notify administrator the price alert
 
 1. follow
 https://get.slack.help/hc/en-us/articles/115005265703-Create-a-bot-for-your-workspace
@@ -19,7 +19,7 @@ https://get.slack.help/hc/en-us/articles/115005265703-Create-a-bot-for-your-work
     SLACK_TOKEN=YOUR_SLACK_TOKEN
     SLACK_CHANNEL=SLACK_CHANNEL_ID
     ```
-### Launch Dockerized MongoDB server as a cache storage
+### (optional) Launch Dockerized MongoDB server as a cache storage
 
 ```
 docker run --name some-mongo -p 27017:27017 -d mongo:3.7.9-jessie
