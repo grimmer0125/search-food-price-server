@@ -13,6 +13,7 @@ const (
 	collection = "QueryResults"
 )
 
+// QueryResult is the result from queryAPI (now there is only one querySite, honestbee)
 type QueryResult struct {
 	// ID        bson.ObjectId `bson:"_id,omitempty"`
 	Store           string    `bson:"store"`

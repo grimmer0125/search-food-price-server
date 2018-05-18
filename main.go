@@ -28,7 +28,6 @@ func main() {
 
 	slackToken := os.Getenv("SLACK_TOKEN")
 	slackChannel := os.Getenv("SLACK_CHANNEL")
-	_, _ = slackToken, slackChannel
 
 	r := gin.New()
 	r.Use(func(context *gin.Context) {
